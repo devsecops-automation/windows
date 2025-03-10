@@ -23,7 +23,7 @@ resource "terraform_data" "generated_key" {
     command = <<-EOT
         echo '${module.aws_key.private_key}' > ./'${module.unique_name.unique}'.pem
         chmod 400 ./'${module.unique_name.unique}'.pem
-        wait 10
+        wait 50
         aws ec2 get-password-data --instance-id ${module.windows.instance_id} --region ${module.windows.region} --priv-launch-key ./'${module.unique_name.unique}'.pem > ./'${module.unique_name.unique}'.json
       EOT
   }
