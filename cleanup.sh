@@ -14,8 +14,12 @@ echo "    - JSON files"
 read -p "Are you sure you want to proceed? (y/N): " confirm
 
 if [[ $confirm =~ ^[Yy]$ ]]; then
-    echo "🗑️  Destroying AWS resources..."
-    terraform destroy -auto-approve
+    if [ -d ".terraform" ]; then
+        echo "🗑️  Destroying AWS resources..."
+        terraform destroy -auto-approve
+    else
+        echo "ℹ️  No .terraform directory found, skipping resource destruction..."
+    fi
     
     echo "🧹 Cleaning up local files..."
     rm -rf .terraform* *.pem terraform.tfstate* *.json
