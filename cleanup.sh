@@ -13,7 +13,7 @@ echo "    - JSON files"
 
 read -p "Are you sure you want to proceed? (y/N): " confirm
 
-if [[ $confirm =~ ^[Yy]$ ]]; then
+if [[ $confirm =~ ^([yY][eE][sS]|[yY])$ ]]; then
     if [ -d ".terraform" ]; then
         echo "🗑️  Destroying AWS resources..."
         terraform destroy -auto-approve

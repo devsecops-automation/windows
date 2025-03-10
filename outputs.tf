@@ -17,3 +17,9 @@ output "username" {
   value       = "Administrator"
   description = "The username of the EC2 instance"
 }
+
+output "unique_name" {
+  value       = module.unique_name.unique
+  description = "The unique name of the EC2 instance"
+
+}

@@ -51,6 +51,15 @@ terraform init
 terraform apply
 ```
 
+## Login into Windows VM
+1. You need the IP from terraform output
+2. Username:  `Administrator`
+3. Password for VM, run:
+
+```sh
+./get-password.sh
+```
+
 ## Security Features
 
 - RDP access (port 3389) limited to your IP

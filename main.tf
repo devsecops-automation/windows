@@ -23,8 +23,6 @@ resource "terraform_data" "generated_key" {
     command = <<-EOT
         echo '${module.aws_key.private_key}' > ./'${module.unique_name.unique}'.pem
         chmod 400 ./'${module.unique_name.unique}'.pem
-        wait 50
-        aws ec2 get-password-data --instance-id ${module.windows.instance_id} --region ${module.windows.region} --priv-launch-key ./'${module.unique_name.unique}'.pem > ./'${module.unique_name.unique}'.json
       EOT
   }
 }
@@ -47,7 +45,8 @@ module "security_group" {
       from_port   = 3389
       to_port     = 3389
       protocol    = "tcp"
-      cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+      # cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+      cidr_blocks = ["0.0.0.0/0"]
     },
   ]
   egress_rules = [
@@ -56,7 +55,8 @@ module "security_group" {
       from_port   = 0
       to_port     = 0
       protocol    = "-1"
-      cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+      # cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+      cidr_blocks = ["0.0.0.0/0"]
     }
   ]
 }
