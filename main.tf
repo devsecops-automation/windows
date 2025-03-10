@@ -1,6 +1,6 @@
 module "windows" {
   source            = "git::https://github.com/devops-terraform-aws/ec2-instance-module.git"
-  ami               = data.aws_ami.windows-2022.id
+  ami               = data.aws_ami.windows-2025.id
   key_name          = module.aws_key.get_key_name
   instance_type     = var.instance_type
   name              = "windows-${var.name}"
@@ -45,7 +45,6 @@ module "security_group" {
       from_port   = 3389
       to_port     = 3389
       protocol    = "tcp"
-      # cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
       cidr_blocks = ["0.0.0.0/0"]
     },
   ]
@@ -55,7 +54,6 @@ module "security_group" {
       from_port   = 0
       to_port     = 0
       protocol    = "-1"
-      # cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
       cidr_blocks = ["0.0.0.0/0"]
     }
   ]
