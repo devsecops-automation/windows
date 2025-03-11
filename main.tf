@@ -9,11 +9,14 @@ module "windows" {
   get_password_data = false
   user_data         = <<-EOF
     <powershell>
-    Add-WindowsFeature Web-Server
+    # Install IIS Web Server
+    Install-WindowsFeature -Name Web-Server
+
+    # Create index.html file
     $webpath = "C:\inetpub\wwwroot\index.html"
-    $content = "Hello, World!"
-    $content | Out-File $webpath
-    Set-Content -Path $webpath -Value $content
+    "Hello, World!" | Set-Content -Path $webpath -Force
+
+    Remove-Item -Path "C:\inetpub\wwwroot\iis*" -Force -Recurse
     </powershell>
     EOF
 }
@@ -47,6 +50,13 @@ module "security_group" {
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
     },
+    {
+      description = "Allow HTTP traffic"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
   ]
   egress_rules = [
     {
@@ -55,6 +65,6 @@ module "security_group" {
       to_port     = 0
       protocol    = "-1"
       cidr_blocks = ["0.0.0.0/0"]
-    }
+    },
   ]
 }

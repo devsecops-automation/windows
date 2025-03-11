@@ -1,3 +1,3 @@
-instance_type = "t3.medium"
+instance_type = "t3.large"
 region        = "us-east-1"
 name          = "vm"
