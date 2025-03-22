@@ -79,8 +79,7 @@ module "security_group" {
 }
 
 module "vpc" {
-  source = "../vpc"
-
+  source         = "git::https://github.com/devops-terraform-aws/vpc-module.git"
   vpc_cidr_block = "1.0.0.0/16"
   public_subnets = "1.0.0.0/24"
   tags = {
