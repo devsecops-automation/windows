@@ -1,3 +1,3 @@
 locals {
-  name = "security-${var.name}"
+  name = var.name
 }

@@ -1,13 +1,16 @@
 module "windows" {
-  source            = "git::https://github.com/devops-terraform-aws/ec2-instance-module.git"
-  ami               = data.aws_ami.windows-2025.id
-  key_name          = module.aws_key.get_key_name
-  instance_type     = var.instance_type
-  name              = "windows-${var.name}"
-  security_groups   = module.security_group.security_name
-  region            = var.region
-  get_password_data = false
-  user_data         = <<-EOF
+  source                 = "git::https://github.com/devops-terraform-aws/ec2-instance-module.git"
+  ami                    = data.aws_ami.windows-2025.id
+  key_name               = module.aws_key.get_key_name
+  instance_type          = var.instance_type
+  vpc_security_group_ids = module.security_group.security_id
+  region                 = var.region
+  subnet_id              = module.vpc.subnet_id
+  get_password_data      = false
+  tags = {
+    "Name" = "windows-${local.name}-${module.unique_name.unique}"
+  }
+  user_data = <<-EOF
     <powershell>
     # Install IIS Web Server
     Install-WindowsFeature -Name Web-Server
@@ -19,6 +22,8 @@ module "windows" {
     Remove-Item -Path "C:\inetpub\wwwroot\iis*" -Force -Recurse
     </powershell>
     EOF
+
+  depends_on = [module.vpc]
 }
 
 resource "terraform_data" "generated_key" {
@@ -42,6 +47,10 @@ module "unique_name" {
 module "security_group" {
   source = "git::https://github.com/devops-terraform-aws/security-group-module.git"
   name   = "${local.name}-${module.unique_name.unique}"
+  vpc_id = module.vpc.vpc_id
+  tags = {
+    "Name" = "sg-${local.name}-${module.unique_name.unique}"
+  }
   ingress_rules = [
     {
       description = "Allow RDP traffic"
@@ -66,5 +75,20 @@ module "security_group" {
       protocol    = "-1"
       cidr_blocks = ["0.0.0.0/0"]
     },
+  ]
+}
+
+module "vpc" {
+  source = "../vpc"
+
+  vpc_cidr_block = "1.0.0.0/16"
+  public_subnets = "1.0.0.0/24"
+  tags = {
+    "Name" = "vpc-${local.name}-${module.unique_name.unique}"
+  }
+  public_routes = [
+    {
+      cidr_block = "0.0.0.0/0"
+    }
   ]
 }
