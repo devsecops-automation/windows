@@ -1,5 +1,5 @@
 output "windows_ip_address" {
-  value       = module.windows.ip_address
+  value       = module.windows.public_ip_address
   description = "The public IP address of the Windows instance"
 }
 
